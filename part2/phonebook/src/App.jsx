@@ -3,7 +3,7 @@ import { useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import axios from "axios";
+import phonebookService from "./services/Phonebook";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -18,45 +18,69 @@ const App = () => {
   const handleNumChange = (event) => {
     setNewNum(event.target.value);
   };
+
+  // add
   const addPerson = (event) => {
     event.preventDefault();
     const newPerson = { name: newName, number: newNum };
 
     let hasDuplicated = false;
     for (const person of persons) {
-      /*       if (JSON.stringify(person) === JSON.stringify(newPerson)) {
-        alert(`${newName} is already added to phonebook`);
-        hasDuplicated = true;
-        break;
-      } */
       if (person.name === newPerson.name) {
-        alert(`${newName} is already added to phonebook`);
         hasDuplicated = true;
+        // update
+        if (
+          window.confirm(
+            `${newName} is already added to phonebook, replace the old number with new one?`
+          )
+        ) {
+          phonebookService.update(person.id, newPerson).then((response) => {
+            setPersons(
+              persons.map((p) => (p.id === person.id ? response.data : p))
+            );
+            setNewName("");
+            setNewNum("");
+          });
+        }
         break;
       }
     }
 
     if (hasDuplicated === false) {
-      setPersons(persons.concat(newPerson));
-      setNewName("");
-      setNewNum("");
+      phonebookService.add(newPerson).then((response) => {
+        setPersons(persons.concat(response.data));
+        setNewName("");
+        setNewNum("");
+      });
     }
   };
 
+  // get
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
+    phonebookService.getAll().then((response) => {
       setPersons(response.data);
     });
   }, []);
 
+  // search
   useEffect(() => {
     const newPersons = persons.filter((person) =>
       person.name.toLowerCase().includes(searchValue.toLowerCase())
     );
-
     // Update the filtered persons state
     setFilteredPersons(newPersons);
   }, [searchValue, persons]);
+
+  // delete
+  const deletePerson = (id) => {
+    console.log(`delete${id}`);
+    const seletedPerson = persons.find((person) => person.id === id);
+    if (window.confirm(`Do you really want to delete ${seletedPerson.name}?`)) {
+      phonebookService.remove(id).then(() => {
+        setPersons(persons.filter((person) => person.id !== id));
+      });
+    }
+  };
 
   return (
     <div>
@@ -76,7 +100,10 @@ const App = () => {
       ></PersonForm>
 
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons}></Persons>
+      <Persons
+        filteredPersons={filteredPersons}
+        deletePerson={deletePerson}
+      ></Persons>
     </div>
   );
 };
