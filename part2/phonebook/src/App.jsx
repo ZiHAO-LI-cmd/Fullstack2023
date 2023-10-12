@@ -4,6 +4,8 @@ import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import phonebookService from "./services/Phonebook";
+import Notification from "./components/Notification";
+import "./index.css";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -11,6 +13,8 @@ const App = () => {
   const [newNum, setNewNum] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [filteredPersons, setFilteredPersons] = useState([...persons]);
+  const [message, setMessage] = useState(null);
+  const [isSuccess, setIsSuccess] = useState(true);
 
   const handleNameChange = (event) => {
     setNewName(event.target.value);
@@ -34,13 +38,28 @@ const App = () => {
             `${newName} is already added to phonebook, replace the old number with new one?`
           )
         ) {
-          phonebookService.update(person.id, newPerson).then((response) => {
-            setPersons(
-              persons.map((p) => (p.id === person.id ? response.data : p))
-            );
-            setNewName("");
-            setNewNum("");
-          });
+          phonebookService
+            .update(person.id, newPerson)
+            .then((response) => {
+              setPersons(
+                persons.map((p) => (p.id === person.id ? response.data : p))
+              );
+              setMessage(`Added ${newName.name}`);
+              setTimeout(() => {
+                setMessage(null);
+              }, 3000);
+              setNewName("");
+              setNewNum("");
+            })
+            .catch((error) => {
+              setIsSuccess(false);
+              setMessage(
+                `Information of ${newName.name} has already been removed from sever`
+              );
+              setTimeout(() => {
+                setMessage(null);
+              }, 3000);
+            });
         }
         break;
       }
@@ -49,6 +68,10 @@ const App = () => {
     if (hasDuplicated === false) {
       phonebookService.add(newPerson).then((response) => {
         setPersons(persons.concat(response.data));
+        setMessage(`Added ${newName.name}`);
+        setTimeout(() => {
+          setMessage(null);
+        }, 3000);
         setNewName("");
         setNewNum("");
       });
@@ -85,6 +108,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} isSuccess={isSuccess}></Notification>
       <Filter
         searchValue={searchValue}
         setSearchValue={setSearchValue}
