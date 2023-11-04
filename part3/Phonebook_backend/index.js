@@ -2,55 +2,66 @@
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2023-10-17 11:59:25
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2023-11-04 18:57:54
+ * @LastEditTime: 2023-11-05 00:27:23
+ * @FilePath: \Fullstack2023\part3\Phonebook_backend\index.js
+ * @Description:
+ * Copyright (c) 2023 by zihao, All Rights Reserved.
+ */
+/*
+ * @Author: zihao zihao-lee@outlook.com
+ * @Date: 2023-10-17 11:59:25
+ * @LastEditors: zihao zihao-lee@outlook.com
+ * @LastEditTime: 2023-11-04 23:43:12
  * @FilePath: \Fullstack2023\part3\Phonebook_backend\index.js
  * @Description:
  *
  * Copyright (c) 2023 by zihao, All Rights Reserved.
  */
-const express = require("express");
+const express = require('express');
 const app = express();
-const morgan = require("morgan");
-morgan.token("body", function (req, res) {
+const morgan = require('morgan');
+morgan.token('body', function (req) {
   return JSON.stringify(req.body);
 });
-const cors = require("cors");
-require("dotenv").config();
+const cors = require('cors');
+require('dotenv').config();
 
-const Person = require("./models/person");
+const Person = require('./models/person');
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message);
 
-  if (error.name === "CastError") {
-    return response.status(400).send({ error: "malformatted id" });
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' });
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
 };
 
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: "unknown endpoint" });
+  response.status(404).send({ error: 'unknown endpoint' });
 };
 
 app.use(cors());
 app.use(express.json());
 app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+  morgan(':method :url :status :res[content-length] - :response-time ms :body')
 );
-app.use(express.static("dist"));
+app.use(express.static('dist'));
 
-app.get("/", (request, response) => {
-  response.send("<h1>Hello World!</h1>");
+app.get('/', (request, response) => {
+  response.send('<h1>Hello World!</h1>');
 });
 
-app.get("/api/persons", (request, response) => {
+app.get('/api/persons', (request, response) => {
   Person.find({}).then((persons) => {
     response.json(persons);
   });
 });
 
-app.get("/api/info", (request, response) => {
+app.get('/api/info', (request, response) => {
   console.log(request.body);
   Person.find({}).then((persons) => {
     response.send(
@@ -59,7 +70,7 @@ app.get("/api/info", (request, response) => {
   });
 });
 
-app.get("/api/persons/:id", (request, response, next) => {
+app.get('/api/persons/:id', (request, response, next) => {
   const _id = request.params.id;
   Person.findById(_id)
     .then((person) => {
@@ -72,28 +83,31 @@ app.get("/api/persons/:id", (request, response, next) => {
     .catch((error) => next(error));
 });
 
-app.delete("/api/persons/:id", (request, response, next) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   const _id = request.params.id;
   Person.findByIdAndDelete(_id)
-    .then((result) => {
+    .then(() => {
       response.status(204).end();
     })
     .catch((error) => next(error));
 });
 
-
-app.post("/api/persons", (request, response) => {
+app.post('/api/persons', (request, response) => {
   const person = new Person(request.body);
 
-  
-  person.save().then((result) => {
-    console.log(`added ${person.name} number ${person.number} to phonebook`);
-    response.json(person);
-    // mongoose.connection.close();
-  });
+  person
+    .save()
+    .then(() => {
+      console.log(`added ${person.name} number ${person.number} to phonebook`);
+      response.json(person);
+      // mongoose.connection.close();
+    })
+    .catch((error) => {
+      response.status(400).json({ error: error.message });
+    });
 });
 
-app.put("/api/persons/:id", (request, response, next) => {
+app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body;
 
   const person = {
@@ -106,10 +120,14 @@ app.put("/api/persons/:id", (request, response, next) => {
     .then((existingPerson) => {
       if (!existingPerson) {
         // 如果没有匹配的条目，返回404错误
-        return response.status(404).json({ error: "Person not found" });
+        return response.status(404).json({ error: 'Person not found' });
       } else {
         // 更新第一个匹配的条目
-        Person.findByIdAndUpdate(existingPerson._id, person, { new: true })
+        Person.findByIdAndUpdate(existingPerson._id, person, {
+          new: true,
+          runValidators: true,
+          context: 'query',
+        })
           .then((updatedPerson) => {
             response.json(updatedPerson);
           })

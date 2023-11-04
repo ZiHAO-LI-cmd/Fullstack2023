@@ -66,15 +66,25 @@ const App = () => {
     }
 
     if (hasDuplicated === false) {
-      phonebookService.add(newPerson).then((response) => {
-        setPersons(persons.concat(response.data));
-        setMessage(`Added ${newName.name}`);
-        setTimeout(() => {
-          setMessage(null);
-        }, 3000);
-        setNewName("");
-        setNewNum("");
-      });
+      phonebookService
+        .add(newPerson)
+        .then((response) => {
+          setPersons(persons.concat(response.data));
+          setMessage(`Added ${newName.name}`);
+          setTimeout(() => {
+            setMessage(null);
+          }, 3000);
+          setNewName("");
+          setNewNum("");
+        })
+        .catch((error) => {
+          setIsSuccess(false);
+          console.log(error);
+          setMessage(error.response.data.error);
+          setTimeout(() => {
+            setMessage(null);
+          }, 3000);
+        });
     }
   };
 
