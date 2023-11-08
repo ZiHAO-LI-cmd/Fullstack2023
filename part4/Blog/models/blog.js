@@ -2,22 +2,22 @@
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2023-11-08 22:42:10
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2023-11-08 23:07:45
+ * @LastEditTime: 2023-11-09 00:04:57
  * @FilePath: \Fullstack2023\part4\Blog\models\blog.js
  * @Description:
  *
  * Copyright (c) 2023 by zihao, All Rights Reserved.
  */
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const blogSchema = new mongoose.Schema({
-    title: String,
-    author: String,
-    url: String,
-    likes: Number
+  title: String,
+  author: String,
+  url: String,
+  likes: Number,
 });
 
-blogSchema.set("toJSON", {
+blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
@@ -25,4 +25,4 @@ blogSchema.set("toJSON", {
   },
 });
 
-module.exports = mongoose.model("Blog", blogSchema);
+module.exports = mongoose.model('Blog', blogSchema);
