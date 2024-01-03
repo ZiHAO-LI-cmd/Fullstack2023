@@ -2,7 +2,7 @@
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2023-11-08 22:42:10
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2024-01-01 16:52:30
+ * @LastEditTime: 2024-01-03 17:22:02
  * @FilePath: \Fullstack2023\part4\Blog\models\blog.js
  * @Description:
  *
@@ -17,6 +17,10 @@ const blogSchema = new mongoose.Schema({
   likes: {
     type: Number,
     default: 0,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
 });
 
