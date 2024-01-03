@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 /*
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2023-11-08 22:42:02
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2024-01-04 00:45:06
+ * @LastEditTime: 2024-01-04 01:25:06
  * @FilePath: \Fullstack2023\part4\Blog\controllers\blogs.js
  * @Description:
  *
@@ -42,12 +43,14 @@ blogsRouter.post('/', async (request, response, next) => {
   if (!request.body.title || !request.body.url) {
     return response.status(400).json({error: 'title or url missing'});
   }
-  console.log(request.token);
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!decodedToken.id) {
-    return response.status(401).json({error: 'token invalid'});
-  }
-  const user = await User.findById(decodedToken.id);
+  // console.log(request.token);
+  // const decodedToken = jwt.verify(request.token, process.env.SECRET);
+  // if (!decodedToken.id) {
+  //   return response.status(401).json({error: 'token invalid'});
+  // }
+  // const user = await User.findById(decodedToken.id);
+
+  const user = request.user;
 
   const blog = new Blog({
     ...request.body,
@@ -67,6 +70,24 @@ blogsRouter.delete('/:id', async (request, response, next) => {
     if (!blog) {
       return response.status(404).end(); // Blog not found
     }
+
+    // const decodedToken = jwt.verify(request.token, process.env.SECRET);
+    // if (!decodedToken.id) {
+    //   return response.status(401).json({error: 'token missing or invalid'});
+    // }
+
+    // if (blog.user.toString() !== decodedToken.id.toString()) {
+    //   return response.status(401).json({error: 'only the creator can delete a blog'});
+    // }
+
+    if (!request.user) {
+      return response.status(401).json({error: 'token missing or invalid'});
+    }
+
+    if (blog.user.toString() !== request.user._id.toString()) {
+      return response.status(401).json({error: 'only the creator can delete a blog'});
+    }
+
 
     await Blog.findByIdAndDelete(request.params.id);
     response.status(204).end(); // Successfully deleted, no content to send back

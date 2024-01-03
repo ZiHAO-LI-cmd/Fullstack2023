@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 /*
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2023-12-31 22:48:36
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2024-01-01 22:56:13
+ * @LastEditTime: 2024-01-04 01:37:48
  * @FilePath: \Fullstack2023\part4\Blog\tests\blog_api.test.js
  * @Description:
  *
@@ -15,6 +16,20 @@ const helper = require('./test_helper');
 
 const api = supertest(app);
 
+const loginUser = {
+  username: 'XXX',
+  password: '123456',
+};
+
+let token;
+
+beforeAll(async () => {
+  const response = await api
+    .post('/api/login')
+    .send(loginUser);
+
+  token = response.body.token;
+});
 
 describe('when there is initially some notes saved', () => {
   test('blogs are returned as json', async () => {
@@ -56,15 +71,20 @@ describe('when there is initially some notes saved', () => {
 
 describe('addition of a new note', () => {
   test('a valid blog can be added ', async () => {
-    const blogsAtBegin = await api.get('/api/blogs');
+    const blogsAtBegin = await api
+      .get('/api/blogs')
+      .set('Authorization', `Bearer ${token}`);
     const newBlog = {
       title: 'How to learn cs',
       author: 'XXX',
       url: 'XXX.cool',
     };
 
+    console.log(token);
+
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -82,6 +102,7 @@ describe('addition of a new note', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400);
   });
@@ -95,8 +116,23 @@ describe('addition of a new note', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(400);
+  });
+
+  test('adding a blog fails with proper status code 401 Unauthorized if a token is not provided', async () => {
+    const newBlog = {
+      title: 'Unauthorized Blog',
+      author: 'Unauthorized Author',
+      url: 'http://unauthorized.com',
+      likes: 1,
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401);
   });
 });
 
