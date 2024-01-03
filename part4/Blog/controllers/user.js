@@ -3,7 +3,7 @@
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2024-01-03 17:23:30
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2024-01-03 23:17:30
+ * @LastEditTime: 2024-01-03 23:42:42
  * @FilePath: \Fullstack2023\part4\Blog\controllers\user.js
  * @Description:
  *
@@ -14,10 +14,11 @@ const bcrypt = require('bcrypt');
 const usersRouter = require('express').Router();
 const User = require('../models/user');
 
-usersRouter.get('', (request, response) => {
-  User.find({}).then((users) => {
-    response.json(users);
-  });
+usersRouter.get('', async (request, response) => {
+  const users = await User
+    .find({}).populate('blogs', {url: 1, title: 1, author: 1});
+
+  response.json(users);
 });
 
 usersRouter.post('/', async (request, response) => {

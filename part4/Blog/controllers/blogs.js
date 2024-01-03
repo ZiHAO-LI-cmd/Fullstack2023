@@ -2,7 +2,7 @@
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2023-11-08 22:42:02
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2024-01-01 22:49:46
+ * @LastEditTime: 2024-01-04 00:45:06
  * @FilePath: \Fullstack2023\part4\Blog\controllers\blogs.js
  * @Description:
  *
@@ -12,11 +12,22 @@
 const blogsRouter = require('express').Router();
 const {request, response} = require('../app');
 const Blog = require('../models/blog');
+const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
-blogsRouter.get('', (request, response) => {
-  Blog.find({}).then((blogs) => {
-    response.json(blogs);
-  });
+// const getTokenFrom = (request) => {
+//   const authorization = request.get('authorization');
+//   if (authorization && authorization.startsWith('Bearer ')) {
+//     return authorization.replace('Bearer ', '');
+//   }
+//   return null;
+// };
+
+blogsRouter.get('', async (request, response) => {
+  const blogs = await Blog
+    .find({}).populate('user', {username: 1, name: 1});
+
+  response.json(blogs);
 });
 
 // blogsRouter.post('', (request, response) => {
@@ -31,11 +42,22 @@ blogsRouter.post('/', async (request, response, next) => {
   if (!request.body.title || !request.body.url) {
     return response.status(400).json({error: 'title or url missing'});
   }
+  console.log(request.token);
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json({error: 'token invalid'});
+  }
+  const user = await User.findById(decodedToken.id);
 
-  const blog = new Blog(request.body);
+  const blog = new Blog({
+    ...request.body,
+    user: user.id,
+  });
 
-  const result = await blog.save();
-  response.status(201).json(result);
+  const savedBlog = await blog.save();
+  user.blogs = user.blogs.concat(savedBlog._id);
+  await user.save();
+  response.status(201).json(savedBlog);
 });
 
 

@@ -2,7 +2,7 @@
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2023-11-08 22:42:10
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2024-01-03 17:22:02
+ * @LastEditTime: 2024-01-03 23:48:59
  * @FilePath: \Fullstack2023\part4\Blog\models\blog.js
  * @Description:
  *
@@ -27,7 +27,7 @@ const blogSchema = new mongoose.Schema({
 blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
-    // delete returnedObject._id;
+    delete returnedObject._id;
     delete returnedObject.__v;
   },
 });
