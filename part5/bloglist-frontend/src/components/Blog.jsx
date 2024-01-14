@@ -1,3 +1,13 @@
+/*
+ * @Author: zihao zihao-lee@outlook.com
+ * @Date: 2024-01-08 01:52:34
+ * @LastEditors: zihao zihao-lee@outlook.com
+ * @LastEditTime: 2024-01-14 18:00:34
+ * @FilePath: \Fullstack2023\part5\bloglist-frontend\src\components\Blog.jsx
+ * @Description:
+ *
+ * Copyright (c) 2024 by zihao, All Rights Reserved.
+ */
 import React from 'react';
 import { useState } from 'react';
 import blogService from '../services/blogs';
@@ -42,17 +52,17 @@ const Blog = ({ blog, updateBlog, handleDelete }) => {
 
   return (
     <div style={blogStyle}>
-      {blog.title}
+      <div className="blog-title">{blog.title}</div>
       <button style={hideWhenVisible} onClick={toggleVisibility}>
         view
       </button>
       <button style={showWhenVisible} onClick={toggleVisibility}>
         hide
       </button>
-      <div style={showWhenVisible}>
-        <div>{blog.author}</div>
-        <div>{blog.url}</div>
-        <div>
+      <div style={showWhenVisible} className="blog-details">
+        <div className="blog-author">{blog.author}</div>
+        <div className="blog-url">{blog.url}</div>
+        <div className="blog-likes">
           {blog.likes}
           <button onClick={handleLike}>like</button>
         </div>
