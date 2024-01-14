@@ -8,12 +8,12 @@
  *
  * Copyright (c) 2024 by zihao, All Rights Reserved.
  */
-import { useState } from "react";
+import { useState } from 'react';
 
 const BlogForm = ({ createBlog }) => {
-  const [newTitle, setNewTitle] = useState("");
-  const [newAuthor, setNewAuthor] = useState("");
-  const [newUrl, setNewUrl] = useState("");
+  const [newTitle, setNewTitle] = useState('');
+  const [newAuthor, setNewAuthor] = useState('');
+  const [newUrl, setNewUrl] = useState('');
 
   const addBlog = (event) => {
     event.preventDefault();
@@ -24,9 +24,9 @@ const BlogForm = ({ createBlog }) => {
     });
 
     // 清空表单
-    setNewTitle("");
-    setNewAuthor("");
-    setNewUrl("");
+    setNewTitle('');
+    setNewAuthor('');
+    setNewUrl('');
   };
 
   return (
@@ -34,7 +34,7 @@ const BlogForm = ({ createBlog }) => {
       <h2>Create a new blog</h2>
       <form onSubmit={addBlog}>
         <div>
-          title:{" "}
+          title:{' '}
           <input
             type="text"
             name="title"
@@ -43,7 +43,7 @@ const BlogForm = ({ createBlog }) => {
           />
         </div>
         <div>
-          author:{" "}
+          author:{' '}
           <input
             type="text"
             name="author"
@@ -52,7 +52,7 @@ const BlogForm = ({ createBlog }) => {
           />
         </div>
         <div>
-          url:{" "}
+          url:{' '}
           <input
             type="text"
             name="url"

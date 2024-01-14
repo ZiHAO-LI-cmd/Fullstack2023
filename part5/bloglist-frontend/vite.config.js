@@ -2,11 +2,11 @@
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2024-01-08 01:52:34
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2024-01-08 02:26:44
+ * @LastEditTime: 2024-01-14 04:12:59
  * @FilePath: \Fullstack2023\part5\bloglist-frontend\vite.config.js
- * @Description: 
- * 
- * Copyright (c) 2024 by zihao, All Rights Reserved. 
+ * @Description:
+ *
+ * Copyright (c) 2024 by zihao, All Rights Reserved.
  */
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
