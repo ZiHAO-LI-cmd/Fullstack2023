@@ -2,7 +2,7 @@
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2023-11-08 22:36:42
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2023-11-09 00:00:17
+ * @LastEditTime: 2024-01-14 23:34:59
  * @FilePath: \Fullstack2023\part4\Blog\app.js
  * @Description:
  *
@@ -41,6 +41,11 @@ app.use(middleware.tokenExtractor);
 app.use('/api/blogs', middleware.userExtractor, blogsRouter);
 app.use('/api/user', usersRouter);
 app.use('/api/login', loginRouter);
+
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/testing');
+  app.use('/api/testing', testingRouter);
+}
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

@@ -14,6 +14,7 @@ module.exports = {
     browser: true,
     es2020: true,
     "jest/globals": true,
+    "cypress/globals": true,
   },
   extends: [
     "eslint:recommended",
@@ -24,7 +25,7 @@ module.exports = {
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parserOptions: { ecmaVersion: "latest", sourceType: "module" },
   settings: { react: { version: "18.2" } },
-  plugins: ["react-refresh", "jest"],
+  plugins: ["react-refresh", "jest", "cypress"],
   rules: {
     indent: ["error", 2],
     "linebreak-style": ["error", "windows"],
