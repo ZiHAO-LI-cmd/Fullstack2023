@@ -1,5 +1,16 @@
-import React from "react";
+/*
+ * @Author: zihao zihao-lee@outlook.com
+ * @Date: 2024-01-19 13:51:44
+ * @LastEditors: zihao zihao-lee@outlook.com
+ * @LastEditTime: 2024-02-06 02:50:11
+ * @FilePath: \Fullstack2023\part6\redux-anecdotes\src\components\AnecdoteList.jsx
+ * @Description:
+ *
+ * Copyright (c) 2024 by zihao, All Rights Reserved.
+ */
 import { useSelector, useDispatch } from "react-redux";
+import { vote } from "../reducers/anecdoteReducer";
+import {showNotificationWithTimeout} from "../reducers/notificationReducer"
 
 const AnecdoteList = () => {
   const anecdotes = useSelector((state) =>
@@ -9,15 +20,18 @@ const AnecdoteList = () => {
       )
       .sort((a, b) => b.votes - a.votes)
   );
-  
+
   const dispatch = useDispatch();
 
-  const vote = (id) => {
+  const voteForAnecdote = (id) => {
     console.log("vote", id);
-    dispatch({
-      type: "VOTE",
-      id,
-    });
+    // dispatch({
+    //   type: "VOTE",
+    //   id,
+    // });
+    dispatch(vote(id));
+    const anecdote = anecdotes.find(anecdote => anecdote.id === id);
+    dispatch(showNotificationWithTimeout(`You voted for '${anecdote.content}'`, 5000));
   };
 
   return (
@@ -27,7 +41,7 @@ const AnecdoteList = () => {
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => voteForAnecdote(anecdote.id)}>vote</button>
           </div>
         </div>
       ))}

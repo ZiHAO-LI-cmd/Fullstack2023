@@ -1,13 +1,22 @@
-import React from "react";
+/*
+ * @Author: zihao zihao-lee@outlook.com
+ * @Date: 2024-02-06 00:35:33
+ * @LastEditors: zihao zihao-lee@outlook.com
+ * @LastEditTime: 2024-02-06 02:15:58
+ * @FilePath: \Fullstack2023\part6\redux-anecdotes\src\components\Filter.jsx
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by zihao, All Rights Reserved. 
+ */
 import { useDispatch } from "react-redux";
-import { filterChange } from "../reducers/filterReducer";
+import { setFilter } from "../reducers/filterReducer";
 
 const Filter = () => {
   const dispatch = useDispatch();
 
   const handleChange = (event) => {
     // input-field value is in variable event.target.value
-    dispatch(filterChange(event.target.value));
+    dispatch(setFilter(event.target.value));
   };
   const style = {
     marginBottom: 10,
