@@ -2,7 +2,7 @@
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2024-01-19 13:42:59
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2024-02-17 14:30:35
+ * @LastEditTime: 2024-02-17 15:46:49
  * @FilePath: \Fullstack2023\part6\redux-anecdotes\src\components\AnecdoteForm.jsx
  * @Description: 
  * 
@@ -20,8 +20,8 @@ const AnecdoteForm = () => {
     const content = event.target.anecdote.value;
     event.target.anecdote.value = "";
 
-    const newNote = await anecdoteService.createNew(content)
-    dispatch(createAnecdote(newNote));
+    // const newNote = await anecdoteService.createNew(content)
+    dispatch(createAnecdote(content));
   };
 
   return (

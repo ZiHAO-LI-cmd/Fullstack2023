@@ -2,7 +2,7 @@
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2024-01-19 12:34:23
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2024-02-17 14:20:33
+ * @LastEditTime: 2024-02-17 15:42:06
  * @FilePath: \Fullstack2023\part6\redux-anecdotes\src\App.jsx
  * @Description:
  *
@@ -17,11 +17,16 @@ import anecdoteService from "./services/anecdotes";
 import { setAnecdotes } from "./reducers/anecdoteReducer";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { initializeAnecdotes } from "./reducers/anecdoteReducer";
 
 const App = () => {
   const dispatch = useDispatch();
+  // useEffect(() => {
+  //   anecdoteService.getAll().then((anecdotes) => dispatch(setAnecdotes(anecdotes)));
+  // }, []);
+
   useEffect(() => {
-    anecdoteService.getAll().then((anecdotes) => dispatch(setAnecdotes(anecdotes)));
+    dispatch(initializeAnecdotes());
   }, []);
 
   return (

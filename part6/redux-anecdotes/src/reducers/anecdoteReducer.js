@@ -2,13 +2,14 @@
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2024-01-19 12:34:23
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2024-02-17 15:08:20
+ * @LastEditTime: 2024-02-17 15:39:43
  * @FilePath: \Fullstack2023\part6\redux-anecdotes\src\reducers\anecdoteReducer.js
  * @Description:
  *
  * Copyright (c) 2024 by zihao, All Rights Reserved.
  */
 import { createSlice } from "@reduxjs/toolkit";
+import anecdoteService from "../services/anecdotes";
 
 // const anecdotesAtStart = [
 //   "If it hurts, do it more often",
@@ -19,7 +20,7 @@ import { createSlice } from "@reduxjs/toolkit";
 //   "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
 // ];
 
-const getId = () => (100000 * Math.random()).toFixed(0);
+// const getId = () => (100000 * Math.random()).toFixed(0);
 
 // const asObject = (anecdote) => {
 //   return {
@@ -75,20 +76,20 @@ const anecdotesSlice = createSlice({
         anecdoteToChange.votes += 1;
       }
     },
-    createAnecdote: {
-      reducer(state, action) {
-        state.push(action.payload);
-      },
-      // prepare(content) {
-      //   return {
-      //     payload: {
-      //       content: String(content),
-      //       id: getId(),
-      //       votes: 0,
-      //     },
-      //   };
-      // },
-    },
+    // createAnecdote: {
+    //   reducer(state, action) {
+    //     state.push(action.payload);
+    //   },
+    //   // prepare(content) {
+    //   //   return {
+    //   //     payload: {
+    //   //       content: String(content),
+    //   //       id: getId(),
+    //   //       votes: 0,
+    //   //     },
+    //   //   };
+    //   // },
+    // },
     appendAnecdote(state, action) {
       state.push(action.payload)
     },
@@ -98,6 +99,20 @@ const anecdotesSlice = createSlice({
   },
 });
 
-export const { vote, createAnecdote, appendAnecdote, setAnecdotes } = anecdotesSlice.actions;
+export const { vote, appendAnecdote, setAnecdotes } = anecdotesSlice.actions;
+
+export const initializeAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch(setAnecdotes(anecdotes))
+  }
+}
+
+export const createAnecdote = content => {
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.createNew(content)
+    dispatch(appendAnecdote(newAnecdote))
+  }
+}
 
 export default anecdotesSlice.reducer;
