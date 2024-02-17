@@ -1,14 +1,27 @@
+/*
+ * @Author: zihao zihao-lee@outlook.com
+ * @Date: 2024-01-19 13:42:59
+ * @LastEditors: zihao zihao-lee@outlook.com
+ * @LastEditTime: 2024-02-17 14:30:35
+ * @FilePath: \Fullstack2023\part6\redux-anecdotes\src\components\AnecdoteForm.jsx
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by zihao, All Rights Reserved. 
+ */
 import { useDispatch } from "react-redux";
 import { createAnecdote } from "../../src/reducers/anecdoteReducer";
+import anecdoteService from "../services/anecdotes";
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
 
-  const addAnecdote = (event) => {
+  const addAnecdote = async (event) => {
     event.preventDefault();
     const content = event.target.anecdote.value;
     event.target.anecdote.value = "";
-    dispatch(createAnecdote(content));
+
+    const newNote = await anecdoteService.createNew(content)
+    dispatch(createAnecdote(newNote));
   };
 
   return (

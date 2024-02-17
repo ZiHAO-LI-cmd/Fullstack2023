@@ -2,7 +2,7 @@
  * @Author: zihao zihao-lee@outlook.com
  * @Date: 2024-01-19 13:51:44
  * @LastEditors: zihao zihao-lee@outlook.com
- * @LastEditTime: 2024-02-06 02:50:11
+ * @LastEditTime: 2024-02-17 14:50:38
  * @FilePath: \Fullstack2023\part6\redux-anecdotes\src\components\AnecdoteList.jsx
  * @Description:
  *
@@ -33,6 +33,8 @@ const AnecdoteList = () => {
     const anecdote = anecdotes.find(anecdote => anecdote.id === id);
     dispatch(showNotificationWithTimeout(`You voted for '${anecdote.content}'`, 5000));
   };
+
+  // console.log(anecdotes);
 
   return (
     <div>
