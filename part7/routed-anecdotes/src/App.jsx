@@ -1,3 +1,13 @@
+/*
+ * @Author: zihao zihao-lee@outlook.com
+ * @Date: 2024-02-23 02:37:15
+ * @LastEditors: zihao zihao-lee@outlook.com
+ * @LastEditTime: 2024-02-24 01:15:12
+ * @FilePath: \Fullstack2023\part7\routed-anecdotes\src\App.jsx
+ * @Description: 
+ * 
+ * Copyright (c) 2024 by zihao, All Rights Reserved. 
+ */
 import { useState } from "react";
 import {
   BrowserRouter as Router,
@@ -7,6 +17,7 @@ import {
   useParams,
   useNavigate,
 } from "react-router-dom";
+import { useField } from './hooks/index';
 
 const Menu = () => {
   const padding = {
@@ -76,17 +87,17 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState("");
-  const [author, setAuthor] = useState("");
-  const [info, setInfo] = useState("");
+  const content = useField('text');
+  const author = useField('text');
+  const info = useField('text');
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0,
     });
     navigate("/");
@@ -96,6 +107,13 @@ const CreateNew = (props) => {
     }, 5000);
   };
 
+  const handleReset = (e) => {
+    e.preventDefault();
+    content.reset();
+    author.reset();
+    info.reset();
+  };
+
   return (
     <div>
       <h2>create a new anecdote</h2>
@@ -103,28 +121,32 @@ const CreateNew = (props) => {
         <div>
           content
           <input
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
+            // {...content}
+            type={content.type}
+            value={content.value} 
+            onChange={content.onChange}
           />
         </div>
         <div>
           author
           <input
-            name="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
+            // {...author}
+            type={author.type}
+            value={author.value} 
+            onChange={author.onChange}
           />
         </div>
         <div>
           url for more info
           <input
-            name="info"
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
+            // {...info}
+            type={info.type}
+            value={info.value} 
+            onChange={info.onChange}
           />
         </div>
         <button>create</button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   );
